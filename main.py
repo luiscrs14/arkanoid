@@ -50,7 +50,7 @@ while running:
     # if ballrect.top < 0 or ballrect.bottom > screen.get_height():
     #     speed[1] = -speed[1]
 
-    ball.move(dt)
+    ball.move()
     player.move(dt)
 
     # flip() the display to put your work on screen
