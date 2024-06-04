@@ -19,9 +19,9 @@ class Player(object):
         # get current state of the keys
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_a]:
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             if self.x > self.width - self.width:
                 self.x -= 300 * dt
-        if keys[pygame.K_d]:
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             if self.x < self.surface.get_width() - self.width:
                 self.x += 300 * dt

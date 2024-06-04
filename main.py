@@ -13,7 +13,7 @@ running = True
 dt = 0
 
 player_radius = 40
-speed = [2, -2]
+speed = [3, -3]
 
 player = Player(
     screen.get_width() / 2 - 40, screen.get_height() - player_radius - 10, 80, 40
@@ -43,14 +43,10 @@ while running:
     for brick in bricks:
         brick.render(screen)
 
-    # ballrect = ballrect.move(speed)
-    # ballrect = pygame.draw.circle(screen, "blue", ballrect.center, 20)
-    # if ballrect.left < 0 or ballrect.right > screen.get_width():
-    #     speed[0] = -speed[0]
-    # if ballrect.top < 0 or ballrect.bottom > screen.get_height():
-    #     speed[1] = -speed[1]
-
     ball.move()
+
+    ball.manage_brick_collisions(bricks)
+    ball.manage_player_collisions(player)
     player.move(dt)
 
     # flip() the display to put your work on screen

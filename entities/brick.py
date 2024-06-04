@@ -14,10 +14,11 @@ class Brick:
         self.height = BRICK_HEIGHT
         self.color = color
         self.is_visible = True
+        self.brick_rect = None
 
     def render(self, screen):
         if self.is_visible:
-            pygame.draw.rect(
+            self.brick_rect = pygame.draw.rect(
                 screen, self.color, (self.x, self.y, self.width, self.height)
             )
 
@@ -25,7 +26,7 @@ class Brick:
         self.is_visible = False
 
 
-def build_bricks(screen: pygame.Surface, rows: int):
+def build_bricks(screen: pygame.Surface, rows: int) -> list[Brick]:
     """
     Fills n rows of bricks on the screen
     uses brick width to calculate brick positions

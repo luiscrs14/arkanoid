@@ -1,5 +1,8 @@
 import pygame
 
+from entities.brick import Brick
+from entities.player import Player
+
 
 class Ball(object):
     def __init__(self, x, y, width, height, speed):
@@ -26,3 +29,19 @@ class Ball(object):
             self.speed[0] = -self.speed[0]
         if self.ball.top < 0 or self.ball.bottom > self.surface.get_height():
             self.speed[1] = -self.speed[1]
+
+    def manage_brick_collisions(self, bricks: list[Brick]):
+        # TODO differentiate location of hit
+        hit = self.ball.collidelist([brick.brick_rect for brick in bricks])
+        if hit != -1:
+            print(f"hit {hit} brick")
+            self.speed[1] = -self.speed[1]
+            bricks[hit].hit()
+            print("hit")
+
+    def manage_player_collisions(self, player: Player):
+        # TODO differentiate location of hit
+        if self.ball.colliderect(player.player):
+            print("hit player")
+            self.speed[1] = -self.speed[1]
+            print("hit")
