@@ -5,7 +5,7 @@ from entities.player import Player
 
 
 class Ball(object):
-    def __init__(self, x, y, width, height, speed):
+    def __init__(self, x, y, width=20, height=20, speed=[3, -3]):
         self.surface = pygame.display.get_surface()
         self.color = "blue"
         self.x = x
@@ -36,7 +36,7 @@ class Ball(object):
         if hit != -1:
             print(f"hit {hit} brick")
             self.speed[1] = -self.speed[1]
-            bricks[hit].hit()
+            bricks.pop(hit)
             print("hit")
 
     def manage_player_collisions(self, player: Player):

@@ -2,7 +2,7 @@ import pygame
 
 
 class Player(object):
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width=80, height=40):
         self.surface = pygame.display.get_surface()
         self.color = "red"
         self.x = x

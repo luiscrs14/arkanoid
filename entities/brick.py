@@ -22,9 +22,6 @@ class Brick:
                 screen, self.color, (self.x, self.y, self.width, self.height)
             )
 
-    def hit(self):
-        self.is_visible = False
-
 
 def build_bricks(screen: pygame.Surface, rows: int) -> list[Brick]:
     """
