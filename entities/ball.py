@@ -5,7 +5,7 @@ from entities.player import Player
 
 
 class Ball(object):
-    def __init__(self, x, y, width=20, height=20, speed=[3, -3]):
+    def __init__(self, x, y, width=20, height=20, speed=[4, -4]):
         self.surface = pygame.display.get_surface()
         self.color = "blue"
         self.x = x

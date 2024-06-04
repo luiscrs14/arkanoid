@@ -4,7 +4,8 @@ import pygame
 from entities.ball import Ball
 from entities.brick import build_bricks
 from entities.player import Player
-from overlays import render_game_over_overlay
+from game_state import GameState
+from overlays import render_game_over_overlay, render_game_won_overlay
 
 # pygame setup
 pygame.init()
@@ -14,7 +15,6 @@ running = True
 run_ended = False
 dt = 0
 player_radius = 40
-speed = [3, -3]
 
 
 def start_game_objects():
@@ -31,6 +31,8 @@ def start_game_objects():
 
 player, ball, bricks = start_game_objects()
 
+game_state = GameState.GAME_IN_PROGRESS
+
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -40,14 +42,21 @@ while running:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("green")
-    if run_ended:
+    if game_state == GameState.GAME_OVER:
         render_game_over_overlay(screen)
         if pygame.key.get_pressed()[pygame.K_q]:
             running = False
         if pygame.key.get_pressed()[pygame.K_r]:
             player, ball, bricks = start_game_objects()
-            run_ended = False
-    else:
+            game_state = GameState.GAME_IN_PROGRESS
+    elif game_state == GameState.GAME_WON:
+        render_game_won_overlay(screen)
+        if pygame.key.get_pressed()[pygame.K_q]:
+            running = False
+        if pygame.key.get_pressed()[pygame.K_r]:
+            player, ball, bricks = start_game_objects()
+            game_state = GameState.GAME_IN_PROGRESS
+    elif game_state == GameState.GAME_IN_PROGRESS:
         player.draw_player()
         ball.draw()
 
@@ -63,7 +72,10 @@ while running:
         player.move(dt)
 
         if ball.ball.bottom > screen.get_height():
-            run_ended = True
+            game_state = GameState.GAME_OVER
+
+        if len(bricks) == 0:
+            game_state = GameState.GAME_WON
 
     # flip() the display to put your work on screen
     pygame.display.flip()
