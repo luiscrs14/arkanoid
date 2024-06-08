@@ -3,24 +3,28 @@ import pygame
 from entities.brick import Brick
 from entities.player import Player
 
+# Collision may not be evaluated immediately, so give some leeway
+COLLISION_COMPENSATION = 10
+
 
 class Ball(object):
-    def __init__(self, x, y, width=20, height=20, speed=[4, -4]):
+    def __init__(self, x, y, diameter=20, speed=[4, -4]):
         self.surface = pygame.display.get_surface()
         self.color = "blue"
         self.x = x
         self.y = y
         self.speed = speed
-        self.width = width
-        self.height = height
+        self.diameter = diameter
         self.ball_center = pygame.Vector2(self.x, self.y)
         self.ball = pygame.draw.circle(
-            self.surface, self.color, self.ball_center, self.width // 2
+            self.surface, self.color, self.ball_center, self.diameter // 2
         )
 
     def draw(self):
         self.ball_center = pygame.Vector2(self.x, self.y)
-        pygame.draw.circle(self.surface, self.color, self.ball.center, self.width // 2)
+        pygame.draw.circle(
+            self.surface, self.color, self.ball.center, self.diameter // 2
+        )
 
     def move(self):
         self.ball = self.ball.move(self.speed)
@@ -31,17 +35,33 @@ class Ball(object):
             self.speed[1] = -self.speed[1]
 
     def manage_brick_collisions(self, bricks: list[Brick]):
-        # TODO differentiate location of hit
         hit = self.ball.collidelist([brick.brick_rect for brick in bricks])
         if hit != -1:
-            print(f"hit {hit} brick")
-            self.speed[1] = -self.speed[1]
+            hit_location = self._get_hit_location(bricks[hit])
+            if hit_location == "VERTICAL":
+                self.speed[1] = -self.speed[1]
+            elif hit_location == "HORIZONTAL":
+                self.speed[0] = -self.speed[0]
             bricks.pop(hit)
-            print("hit")
 
     def manage_player_collisions(self, player: Player):
         # TODO differentiate location of hit
         if self.ball.colliderect(player.player):
-            print("hit player")
             self.speed[1] = -self.speed[1]
-            print("hit")
+
+    def _get_hit_location(self, brick: Brick):
+        print(f"ball coords {self.ball.x, self.ball.y}")
+        print(f"hit {brick} brick. Coords: {brick.x, brick.y}")
+        if self.ball.x + self.diameter < brick.x + COLLISION_COMPENSATION:
+            print("LEFT")
+            return "HORIZONTAL"
+        if self.ball.x > brick.x + brick.width - COLLISION_COMPENSATION:
+            print("RIGHT")
+            return "HORIZONTAL"
+        if self.ball.y + self.diameter < brick.y + COLLISION_COMPENSATION:
+            print("UP")
+            return "VERTICAL"
+        if self.ball.y >= brick.y + brick.height - COLLISION_COMPENSATION:
+            print("DOWN")
+            return "VERTICAL"
+        raise ValueError("No hit location found")
