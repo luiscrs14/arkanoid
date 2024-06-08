@@ -1,14 +1,12 @@
 import pygame
 
 from entities.brick import Brick
+from entities.intersection_utils.intersection_utils import rect_intersection
 from entities.player import Player
-
-# Collision may not be evaluated immediately, so give some leeway
-COLLISION_COMPENSATION = 10
 
 
 class Ball(object):
-    def __init__(self, x, y, diameter=20, speed=[4, -4]):
+    def __init__(self, x, y, diameter=20, speed=[6, -6]):
         self.surface = pygame.display.get_surface()
         self.color = "blue"
         self.x = x
@@ -45,7 +43,6 @@ class Ball(object):
             bricks.pop(hit)
 
     def manage_player_collisions(self, player: Player):
-        # TODO differentiate location of hit
         if self.ball.colliderect(player.player):
             hit_location = self._get_player_hit_location(player)
             if hit_location == "VERTICAL":
@@ -54,34 +51,23 @@ class Ball(object):
                 self.speed[0] = -self.speed[0]
 
     def _get_brick_hit_location(self, brick: Brick):
-        print(f"ball coords {self.ball.x, self.ball.y}")
-        print(f"hit {brick} brick. Coords: {brick.x, brick.y}")
-        if self.ball.x + self.diameter < brick.x + COLLISION_COMPENSATION:
-            print("LEFT")
-            return "HORIZONTAL"
-        if self.ball.x > brick.x + brick.width - COLLISION_COMPENSATION:
-            print("RIGHT")
-            return "HORIZONTAL"
-        if self.ball.y + self.diameter < brick.y + COLLISION_COMPENSATION:
-            print("UP")
+        intersection = rect_intersection(self.ball, brick.brick_rect)
+        print(
+            f"hit player. intersection rect : {intersection.x, intersection.y, intersection.width, intersection.height}"
+        )
+
+        if intersection.width >= intersection.height:
             return "VERTICAL"
-        if self.ball.y >= brick.y + brick.height - COLLISION_COMPENSATION:
-            print("DOWN")
-            return "VERTICAL"
-        raise ValueError("No hit location found")
+        else:
+            return "HORIZONTAL"
 
     def _get_player_hit_location(self, player: Player):
-        print(f"ball coords {self.ball.x, self.ball.y}")
-        print(f"hit player. Coords: {player.x, player.y}")
-        if self.ball.x + self.diameter < player.x + COLLISION_COMPENSATION:
-            print("LEFT")
-            return "HORIZONTAL"
-        if self.ball.x > player.x + player.width - COLLISION_COMPENSATION:
-            print("RIGHT")
-            return "HORIZONTAL"
-        if self.ball.y + self.diameter < player.y + COLLISION_COMPENSATION:
-            print("UP")
+        intersection = rect_intersection(self.ball, player.player)
+        print(
+            f"hit player. intersection rect : {intersection.x, intersection.y, intersection.width, intersection.height}"
+        )
+
+        if intersection.width >= intersection.height:
             return "VERTICAL"
-        if self.ball.y >= player.y + player.height - COLLISION_COMPENSATION:
-            raise ValueError("Hits should never happen downwards!")
-        raise ValueError("No hit location found")
+        else:
+            return "HORIZONTAL"
