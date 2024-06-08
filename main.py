@@ -5,7 +5,11 @@ from entities.ball import Ball
 from entities.brick import build_bricks
 from entities.player import Player
 from game_state import GameState
-from overlays import render_game_over_overlay, render_game_won_overlay
+from overlays import (
+    render_fps_overlay,
+    render_game_over_overlay,
+    render_game_won_overlay,
+)
 
 # pygame setup
 pygame.init()
@@ -77,6 +81,7 @@ while running:
         if len(bricks) == 0:
             game_state = GameState.GAME_WON
 
+    render_fps_overlay(clock, screen)
     # flip() the display to put your work on screen
     pygame.display.flip()
 

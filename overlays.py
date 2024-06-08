@@ -29,3 +29,10 @@ def render_game_won_overlay(screen):
     screen.blit(game_win_text, (20, 0))
     screen.blit(restart_text, (20, 40))
     screen.blit(quit_text, (20, 80))
+
+
+def render_fps_overlay(clock, screen):
+    fps_text = pygame.font.SysFont("Comic Sans MS", 20).render(
+        str(int(clock.get_fps())), True, "blue"
+    )
+    screen.blit(fps_text, (0, 0))
