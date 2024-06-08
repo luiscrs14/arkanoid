@@ -1,4 +1,3 @@
-* better collision detection
 * allow "spin" on ball (wacky physics based on how ball was hit with player)
 * potential couch co-op?
 * scores
